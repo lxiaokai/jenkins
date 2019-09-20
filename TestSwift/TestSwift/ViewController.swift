@@ -8,6 +8,8 @@
 
 import UIKit
 import WebKit
+import AVFoundation
+
 
 class ViewController: UIViewController {
 
@@ -15,37 +17,29 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let wkwebview = WKWebView()
-        
-
-        print("1")
-        wkwebview.evaluate(script: "21") { (res, error) in
-            print("2")
-        }
-        print("3")
     }
 
 
 }
 
-
-extension WKWebView {
-    func evaluate(script: String, completionHandler: @escaping (_ result: AnyObject?, _ error: Error?) -> Void) {
-        var finished = false
+extension Data {
+    init(buffer: AVAudioPCMBuffer, time: AVAudioTime) {
+        let audioBuffer = buffer.audioBufferList.pointee.mBuffers
+        self.init(bytes: audioBuffer.mData!, count: Int(audioBuffer.mDataByteSize))
+    }
+    
+    func makePCMBuffer(format: AVAudioFormat) -> AVAudioPCMBuffer? {
+        let streamDesc = format.streamDescription.pointee
+        let frameCapacity = UInt32(count) / streamDesc.mBytesPerFrame
+        guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCapacity) else { return nil }
         
-        evaluateJavaScript(script) { (result, error) in
-            if error == nil {
-                if result != nil {
-                    completionHandler(result as AnyObject, nil)
-                }
-            } else {
-                completionHandler(nil, error as Error?)
-            }
-            finished = true
+        buffer.frameLength = buffer.frameCapacity
+        let audioBuffer = buffer.audioBufferList.pointee.mBuffers
+        
+        withUnsafeBytes { addr in
+            audioBuffer.mData?.copyMemory(from: addr, byteCount: Int(audioBuffer.mDataByteSize))
         }
         
-        while !finished {
-            RunLoop.current.run(mode: .default, before: Date.distantFuture)
-        }
+        return buffer
     }
 }
