@@ -377,7 +377,7 @@
 			baseConfigurationReference = 3C00F9789ECDABA0BEF3D542 /* Pods-TestSwift.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Bing Jian Liao (P5PZ9A7TNP)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Bing Jian Liao (63S89KMK2C)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 63S89KMK2C;
 				INFOPLIST_FILE = TestSwift/Info.plist;
